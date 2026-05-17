@@ -9,12 +9,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
+
+//Routes
+import authRoutes from "./routes/authRoutes";
+app.use("/api/auth", authRoutes);
 
 
 
