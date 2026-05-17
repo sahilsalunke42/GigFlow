@@ -1,0 +1,44 @@
+node_modules/
+dist/
+.env
+logs/
+coverage/
+*.log
+.DS_Store
+.idea/
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Optional: Ignore build artifacts
+build/
+# Optional: Ignore test coverage reports
+coverage/
+# Optional: Ignore environment variable files
+
+# Optional: Ignore local configuration files
+config/local.js
+# Optional: Ignore database files
+data/
+# Optional: Ignore temporary files
+tmp/
+# Optional: Ignore IDE-specific files
+*.sublime-project
+*.sublime-workspace
+# Optional: Ignore OS-specific files
+Thumbs.db
+Desktop.ini
+# Optional: Ignore log files
+logs/
+# Optional: Ignore backup files
+*.bak
+# Optional: Ignore compiled files
+*.tsbuildinfo
+# Optional: Ignore Docker files
+docker-compose.override.yml
+# Optional: Ignore Kubernetes files
+k8s/
+# Optional: Ignore serverless files
+serverless.yml
+# Optional: Ignore cloud configuration files
+cloud-config/
