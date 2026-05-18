@@ -4,7 +4,11 @@ import cors from 'cors';
 import express from 'express';
 const app = express();
 
-const allowedOrigins: string[] = ['http://localhost:5173'];
+const allowedOrigins: string[] = [
+    'http://localhost:5173',
+    'https://gig-flow-eight-kappa.vercel.app',
+];
+
 if (process.env.FRONTEND_URL) {
     allowedOrigins.push(process.env.FRONTEND_URL);
 }
@@ -14,7 +18,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        const isAllowedOrigin =
+            allowedOrigins.includes(origin) ||
+            /^https:\/\/.*\.vercel\.app$/.test(origin);
+
+        return callback(null, isAllowedOrigin);
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
