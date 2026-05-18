@@ -1,8 +1,8 @@
 // Auth Service
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/userModel.ts";
-import { registerSchema, loginSchema } from "../validators/authValidator.ts";
+import User from "../models/userModel";
+import { registerSchema, loginSchema } from "../validators/authValidator";
 import bcrypt from "bcryptjs";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;

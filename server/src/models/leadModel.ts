@@ -1,19 +1,18 @@
 import { Schema, model, Document } from "mongoose";
-import User from "./userModel";
 
-enum LeadStatus {
+export enum LeadStatus {
     New = 'new',
     Contacted = 'contacted',
     Qualified = 'qualified',
     Lost = 'lost'
-};
+}
 
-enum LeadSource {
+export enum LeadSource {
     Website = 'website',
     Referral = 'referral',
     Advertisement = 'advertisement',
     Other = 'other'
-};
+}
 
 export interface ILead extends Document {
     name: string;
@@ -35,12 +34,12 @@ const LeadSchema = new Schema<ILead>({
     },
     status: {
         type: String,   
-        enum: LeadStatus,
+        enum: Object.values(LeadStatus),
         default: LeadStatus.New
     },
     source: {   
         type: String,
-        enum: LeadSource,
+        enum: Object.values(LeadSource),
         default: LeadSource.Website
     },
     createdBy: {
@@ -50,6 +49,21 @@ const LeadSchema = new Schema<ILead>({
     }
 }, {
     timestamps: true
+});
+
+LeadSchema.set("toJSON", {
+    virtuals: true,
+    versionKey: false,
+    transform: (_doc, ret) => {
+        const document = ret as any;
+        document.id = document._id.toString();
+        delete document._id;
+        return document;
+    },
+});
+
+LeadSchema.set("toObject", {
+    virtuals: true,
 });
 
 

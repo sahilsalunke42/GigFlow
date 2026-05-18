@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/server.ts",
-    "dev": "nodemon --watch src --ext ts,js --exec \"ts-node src/server.ts\""
+    "dev": "nodemon src/server.ts"
   },
   "keywords": [],
   "author": "",

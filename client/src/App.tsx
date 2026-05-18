@@ -61,7 +61,7 @@ function AppRoutes() {
   );
 }
 
-export function App() {
+export function App(): React.ReactElement {
   const hydrateFromStorage = useAuthStore((state) => state.hydrateFromStorage);
 
   useEffect(() => {

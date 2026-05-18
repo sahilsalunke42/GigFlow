@@ -49,7 +49,6 @@ export const useLogout = () => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      await authApi.logout();
       logout();
     },
   });

@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -18,7 +18,9 @@ app.use(cors({
 
 //Routes
 import authRoutes from "./routes/authRoutes";
+import leadRoutes from "./routes/leadRoutes";
 app.use("/api/auth", authRoutes);
+app.use("/api/leads", leadRoutes);
 
 
 

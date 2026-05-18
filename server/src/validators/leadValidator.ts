@@ -3,7 +3,7 @@ import z from "zod";
 
 // lead validators to ensure that the data sent by the client is valid and meets the required criteria for lead-related operations.
 
-export const createleadSchema = z.object({
+export const createLeadSchema = z.object({
     name: z.string().min(2, "name must be atleast 2 characters long"),
     email: z.string().email("Invalid email").toLowerCase(),
     status: z.enum(['new', 'contacted', 'qualified', 'lost']).optional(),
