@@ -11,6 +11,7 @@ interface LeadsStore {
   setStatus: (status: LeadStatus[]) => void;
   setSource: (source: LeadSource[]) => void;
   setSortBy: (sortBy: 'created' | 'updated' | 'name') => void;
+  setSort: (sort?: 'latest' | 'oldest') => void;
   setSortOrder: (sortOrder: 'asc' | 'desc') => void;
 }
 
@@ -83,6 +84,16 @@ export const useLeadsStore = create<LeadsStore>((set) => ({
       filters: {
         ...state.filters,
         sortBy,
+      },
+    }));
+  },
+
+  setSort: (sort?: 'latest' | 'oldest') => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        sort,
+        page: 1,
       },
     }));
   },

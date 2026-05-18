@@ -89,8 +89,19 @@ export const getLeads = async (req: Request, res: Response) => {
         }
         
         // Build sort query
-        const sortBy = req.query.sortBy as string || 'createdAt';
-        const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+        let sortBy = (req.query.sortBy as string) || 'createdAt';
+        let sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+
+        // Support a shorthand `sort` query param: 'latest' or 'oldest'
+        const sortParam = (req.query.sort as string)?.toLowerCase();
+        if (sortParam === 'latest') {
+            sortBy = 'createdAt';
+            sortOrder = -1; // newest first
+        } else if (sortParam === 'oldest') {
+            sortBy = 'createdAt';
+            sortOrder = 1; // oldest first
+        }
+
         const sort: any = {};
         sort[sortBy] = sortOrder;
         

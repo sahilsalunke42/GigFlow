@@ -18,6 +18,7 @@ export const LeadsPage: React.FC = () => {
   const setSearch = useLeadsStore((state) => state.setSearch);
   const setStatus = useLeadsStore((state) => state.setStatus);
   const setSource = useLeadsStore((state) => state.setSource);
+  const setSort = useLeadsStore((state) => state.setSort);
 
   const { data: leadsData, isLoading, error } = useLeads(filters);
   const { data: assignableUsers = [] } = useAssignableUsers();
@@ -107,6 +108,7 @@ export const LeadsPage: React.FC = () => {
           onStatusChange={setStatus}
           onSourceChange={setSource}
           onExport={handleExport}
+          onSortChange={setSort}
         />
 
         {isLoading ? (

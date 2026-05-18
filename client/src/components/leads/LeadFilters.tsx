@@ -10,6 +10,7 @@ interface LeadFiltersProps {
   onStatusChange: (status: LeadStatus[]) => void;
   onSourceChange: (source: LeadSource[]) => void;
   onExport?: () => void;
+  onSortChange?: (sort?: 'latest' | 'oldest') => void;
 }
 
 export const LeadFilters: React.FC<LeadFiltersProps> = ({
@@ -17,7 +18,9 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
   onStatusChange,
   onSourceChange,
   onExport,
+  onSortChange,
 }) => {
+  const [selectedSort, setSelectedSort] = useState<'latest' | 'oldest' | undefined>(undefined);
   const [searchInput, setSearchInput] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<LeadStatus[]>([]);
   const [selectedSource, setSelectedSource] = useState<LeadSource[]>([]);
@@ -61,6 +64,20 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
         </div>
 
         <div className="flex gap-2">
+          <select
+            value={selectedSort ?? ''}
+            onChange={(e) => {
+              const v = e.target.value as 'latest' | 'oldest' | '';
+              const val = v === '' ? undefined : v;
+              setSelectedSort(val as any);
+              onSortChange && onSortChange(val as any);
+            }}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="">Sort</option>
+            <option value="latest">Latest</option>
+            <option value="oldest">Oldest</option>
+          </select>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`px-4 py-2 rounded-lg border-2 transition-colors flex items-center gap-2 ${

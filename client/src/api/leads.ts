@@ -33,6 +33,7 @@ export const leadsApi = {
     }
     if (filters.sortBy) params.append('sortBy', filters.sortBy);
     if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
+    if (filters.sort) params.append('sort', filters.sort);
 
     const response = await apiClient.get<LeadsServerResponse>('/leads', { params });
     return {

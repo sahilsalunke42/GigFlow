@@ -36,6 +36,8 @@ export interface LeadFilter {
   status?: LeadStatus[];
   source?: LeadSource[];
   search?: string;
+  // 'latest' | 'oldest' maps to server `sort` query param
+  sort?: 'latest' | 'oldest';
   sortBy?: 'created' | 'updated' | 'name';
   sortOrder?: 'asc' | 'desc';
   page?: number;
