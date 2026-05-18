@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import cors from 'cors';
 import express from 'express';
+import { swaggerServe, swaggerSetup } from './utils/swagger';
 const app = express();
 
 const allowedOrigins: string[] = [
@@ -41,6 +42,7 @@ import leadRoutes from "./routes/leadRoutes";
 
 app.use("/api/leads", leadRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api-docs', swaggerServe, swaggerSetup);
 
 
 
