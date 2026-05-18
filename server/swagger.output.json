@@ -18,7 +18,7 @@
   "paths": {
     "/api/auth/register": {
       "post": {
-        "description": "",
+        "description": "Creates an Admin or Sales account for access to the Smart Leads Dashboard.",
         "responses": {
           "201": {
             "description": "User registered successfully"
@@ -27,7 +27,7 @@
             "description": "Validation error"
           }
         },
-        "summary": "User Registration",
+        "summary": "Register a new dashboard user",
         "tags": [
           "Auth"
         ],
@@ -74,7 +74,7 @@
     },
     "/api/auth/login": {
       "post": {
-        "description": "",
+        "description": "Verifies credentials and returns a signed token plus user details.",
         "responses": {
           "200": {
             "description": "JWT token and user details"
@@ -83,7 +83,7 @@
             "description": "Invalid email or password"
           }
         },
-        "summary": "User Login",
+        "summary": "Authenticate and receive a JWT",
         "tags": [
           "Auth"
         ],
@@ -132,7 +132,7 @@
     },
     "/api/leads": {
       "post": {
-        "description": "",
+        "description": "Adds a new lead to the dashboard with status, source, and assignment details.",
         "responses": {
           "201": {
             "description": "Lead created successfully"
@@ -146,7 +146,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Create Lead",
+        "summary": "Create a lead record",
         "tags": [
           "Leads"
         ],
@@ -213,7 +213,7 @@
         }
       },
       "get": {
-        "description": "",
+        "description": "Returns a paginated lead list with search, status, source, and sort options.",
         "responses": {
           "default": {
             "description": ""
@@ -224,7 +224,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "View Leads List",
+        "summary": "Browse and filter leads",
         "tags": [
           "Leads"
         ],
@@ -299,7 +299,7 @@
     },
     "/api/leads/export": {
       "get": {
-        "description": "",
+        "description": "Downloads the current lead dataset as a CSV file for reporting and sharing.",
         "responses": {
           "200": {
             "description": "CSV file download"
@@ -310,7 +310,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "CSV Export Functionality",
+        "summary": "Export leads to CSV",
         "tags": [
           "Leads"
         ]
@@ -318,7 +318,7 @@
     },
     "/api/leads/{id}": {
       "get": {
-        "description": "",
+        "description": "Returns a single lead with ownership, status, source, and activity data.",
         "responses": {
           "200": {
             "description": "Lead details"
@@ -332,13 +332,13 @@
             "bearerAuth": []
           }
         ],
-        "summary": "View Single Lead Details",
+        "summary": "View lead details",
         "tags": [
           "Leads"
         ]
       },
       "put": {
-        "description": "",
+        "description": "Updates an existing lead while preserving dashboard ownership and history.",
         "responses": {
           "200": {
             "description": "Lead updated successfully"
@@ -352,13 +352,13 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Update Lead",
+        "summary": "Update a lead record",
         "tags": [
           "Leads"
         ]
       },
       "delete": {
-        "description": "",
+        "description": "Removes a lead from the dashboard after ownership and access checks.",
         "responses": {
           "200": {
             "description": "Lead deleted successfully"
@@ -372,7 +372,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Delete Lead",
+        "summary": "Delete a lead record",
         "tags": [
           "Leads"
         ]

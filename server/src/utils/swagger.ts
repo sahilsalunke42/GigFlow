@@ -89,7 +89,8 @@ export const generateSwagger = async (): Promise<void> => {
     // Auth: register
     if (doc.paths['/api/auth/register'] && doc.paths['/api/auth/register'].post) {
       addOperationMetadata(doc.paths['/api/auth/register'].post, {
-        summary: 'User Registration',
+        summary: 'Register a new dashboard user',
+        description: 'Creates an Admin or Sales account for access to the Smart Leads Dashboard.',
         tags: ['Auth'],
         requestBody: {
           required: true,
@@ -111,7 +112,8 @@ export const generateSwagger = async (): Promise<void> => {
     // Auth: login
     if (doc.paths['/api/auth/login'] && doc.paths['/api/auth/login'].post) {
       addOperationMetadata(doc.paths['/api/auth/login'].post, {
-        summary: 'User Login',
+        summary: 'Authenticate and receive a JWT',
+        description: 'Verifies credentials and returns a signed token plus user details.',
         tags: ['Auth'],
         requestBody: {
           required: true,
@@ -141,7 +143,8 @@ export const generateSwagger = async (): Promise<void> => {
     // Add parameters and requestBody for leads endpoints if present
     if (doc.paths['/api/leads'] && doc.paths['/api/leads'].post) {
       addOperationMetadata(doc.paths['/api/leads'].post, {
-        summary: 'Create Lead',
+        summary: 'Create a lead record',
+        description: 'Adds a new lead to the dashboard with status, source, and assignment details.',
         tags: ['Leads'],
         requestBody: {
           required: true,
@@ -172,7 +175,8 @@ export const generateSwagger = async (): Promise<void> => {
 
     if (doc.paths['/api/leads'] && doc.paths['/api/leads'].get) {
       addOperationMetadata(doc.paths['/api/leads'].get, {
-        summary: 'View Leads List',
+        summary: 'Browse and filter leads',
+        description: 'Returns a paginated lead list with search, status, source, and sort options.',
         tags: ['Leads'],
       });
       doc.paths['/api/leads'].get.parameters = doc.paths['/api/leads'].get.parameters || [];
@@ -192,7 +196,8 @@ export const generateSwagger = async (): Promise<void> => {
 
     if (doc.paths['/api/leads/export'] && doc.paths['/api/leads/export'].get) {
       addOperationMetadata(doc.paths['/api/leads/export'].get, {
-        summary: 'CSV Export Functionality',
+        summary: 'Export leads to CSV',
+        description: 'Downloads the current lead dataset as a CSV file for reporting and sharing.',
         tags: ['Leads'],
         responses: { '200': { description: 'CSV file download' } },
       });
@@ -201,21 +206,24 @@ export const generateSwagger = async (): Promise<void> => {
     if (doc.paths['/api/leads/{id}']) {
       if (doc.paths['/api/leads/{id}'].get) {
         addOperationMetadata(doc.paths['/api/leads/{id}'].get, {
-          summary: 'View Single Lead Details',
+          summary: 'View lead details',
+          description: 'Returns a single lead with ownership, status, source, and activity data.',
           tags: ['Leads'],
           responses: { '200': { description: 'Lead details' }, '404': { description: 'Lead not found' } },
         });
       }
       if (doc.paths['/api/leads/{id}'].put) {
         addOperationMetadata(doc.paths['/api/leads/{id}'].put, {
-          summary: 'Update Lead',
+          summary: 'Update a lead record',
+          description: 'Updates an existing lead while preserving dashboard ownership and history.',
           tags: ['Leads'],
           responses: { '200': { description: 'Lead updated successfully' }, '404': { description: 'Lead not found' } },
         });
       }
       if (doc.paths['/api/leads/{id}'].delete) {
         addOperationMetadata(doc.paths['/api/leads/{id}'].delete, {
-          summary: 'Delete Lead',
+          summary: 'Delete a lead record',
+          description: 'Removes a lead from the dashboard after ownership and access checks.',
           tags: ['Leads'],
           responses: { '200': { description: 'Lead deleted successfully' }, '404': { description: 'Lead not found' } },
         });
