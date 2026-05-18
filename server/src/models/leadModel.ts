@@ -1,6 +1,5 @@
 import { Schema, model, Document } from "mongoose";
-import User from "./userModel";
-User
+import User from "./userModel.ts";
 
 enum LeadStatus {
     New = 'new',

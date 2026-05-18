@@ -1,5 +1,5 @@
-import app from "./app";
-import connectDB from "./cofig/db";
+import app from "./app.ts";
+import connectDB from "./cofig/db.ts";
 
 
 connectDB();
