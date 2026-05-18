@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../models/userModel.ts";
-import { IAuthResponse } from "../types/authtypes.ts";
+import User from "../models/userModel";
+import { IAuthResponse } from "../types/authtypes";
 import { Request, Response, NextFunction } from "express";
 
 // Augment Express Request to include `user`

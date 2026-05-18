@@ -17,7 +17,7 @@ app.use(cors({
 
 
 //Routes
-import authRoutes from "./routes/authRoutes.ts";
+import authRoutes from "./routes/authRoutes";
 app.use("/api/auth", authRoutes);
 
 
