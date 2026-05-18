@@ -6,17 +6,13 @@ export const LEAD_STATUS_OPTIONS = [
   { value: 'new', label: 'New' },
   { value: 'contacted', label: 'Contacted' },
   { value: 'qualified', label: 'Qualified' },
-  { value: 'converted', label: 'Converted' },
   { value: 'lost', label: 'Lost' },
 ];
 
 export const LEAD_SOURCE_OPTIONS = [
   { value: 'website', label: 'Website' },
-  { value: 'email', label: 'Email' },
+  { value: 'instagram', label: 'Instagram' },
   { value: 'referral', label: 'Referral' },
-  { value: 'social', label: 'Social Media' },
-  { value: 'event', label: 'Event' },
-  { value: 'other', label: 'Other' },
 ];
 
 export const ITEMS_PER_PAGE = 10;

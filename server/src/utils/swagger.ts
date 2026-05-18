@@ -12,32 +12,43 @@ const endpointsFiles = [
   path.resolve(__dirname, '../routes/leadRoutes.ts'),
 ];
 
+const swaggerSeedDocument = {
+  openapi: '3.0.3',
+  info: {
+    title: 'Smart Leads Dashboard API',
+    description: 'API documentation for the Smart Leads Dashboard assignment.',
+    version: '1.0.0',
+  },
+  servers: [
+    {
+      url: 'https://gigflow-pysn.onrender.com',
+      description: 'Production',
+    },
+    {
+      url: 'http://localhost:3000',
+      description: 'Local development',
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+};
+
 const swaggerDocument = fs.existsSync(outputFile)
   ? JSON.parse(fs.readFileSync(outputFile, 'utf8'))
-  : {
-      openapi: '3.0.3',
-      info: {
-        title: 'GigFlow API',
-        description: 'Swagger documentation for the GigFlow backend API.',
-        version: '1.0.0',
-      },
-      servers: [
-        {
-          url: 'https://gigflow-pysn.onrender.com',
-          description: 'Production',
-        },
-        {
-          url: 'http://localhost:3000',
-          description: 'Local development',
-        },
-      ],
-    };
+  : swaggerSeedDocument;
 
 export const swaggerServe = swaggerUi.serve;
 export const swaggerSetup = swaggerUi.setup(swaggerDocument);
 
 export const generateSwagger = async (): Promise<void> => {
-  await swaggerAutogenInstance(outputFile, endpointsFiles, swaggerDocument);
+  await swaggerAutogenInstance(outputFile, endpointsFiles, swaggerSeedDocument);
 
   // Post-process generated output to ensure OpenAPI-only and add useful metadata
   if (fs.existsSync(outputFile)) {
@@ -59,17 +70,14 @@ export const generateSwagger = async (): Promise<void> => {
     Object.keys(doc.paths || {}).forEach((p) => {
       let newPath = p;
 
-      // Auth routes: prefix /register, /login, /refresh, /me, /assignable-users
+      // Auth routes: prefix /register, /login, /refresh
       if (p === '/register') newPath = '/api/auth/register';
       if (p === '/login') newPath = '/api/auth/login';
       if (p === '/refresh') newPath = '/api/auth/refresh';
-      if (p === '/me') newPath = '/api/auth/me';
-      if (p === '/assignable-users') newPath = '/api/auth/assignable-users';
 
       // Leads routes
       if (p === '/') newPath = '/api/leads';
       if (p === '/export') newPath = '/api/leads/export';
-      if (p === '/bulk-delete') newPath = '/api/leads/bulk-delete';
       if (p === '/{id}') newPath = '/api/leads/{id}';
 
       newPaths[newPath] = doc.paths[p];
@@ -81,7 +89,7 @@ export const generateSwagger = async (): Promise<void> => {
     // Auth: register
     if (doc.paths['/api/auth/register'] && doc.paths['/api/auth/register'].post) {
       addOperationMetadata(doc.paths['/api/auth/register'].post, {
-        summary: 'Register a new user',
+        summary: 'User Registration',
         tags: ['Auth'],
         requestBody: {
           required: true,
@@ -89,27 +97,27 @@ export const generateSwagger = async (): Promise<void> => {
             'application/json': {
               schema: {
                 type: 'object',
-                properties: { name: { type: 'string' }, email: { type: 'string' }, password: { type: 'string' }, role: { type: 'string' } },
+                properties: { name: { type: 'string' }, email: { type: 'string' }, password: { type: 'string' }, role: { type: 'string', enum: ['admin', 'sales'] } },
                 required: ['name', 'email', 'password'],
               },
               example: { name: 'Jane Doe', email: 'jane@example.com', password: 'secret123', role: 'sales' },
             },
           },
         },
-        responses: { '201': { description: 'User created' }, '400': { description: 'Validation error' } },
+        responses: { '201': { description: 'User registered successfully' }, '400': { description: 'Validation error' } },
       });
     }
 
     // Auth: login
     if (doc.paths['/api/auth/login'] && doc.paths['/api/auth/login'].post) {
       addOperationMetadata(doc.paths['/api/auth/login'].post, {
-        summary: 'Log in',
+        summary: 'User Login',
         tags: ['Auth'],
         requestBody: {
           required: true,
           content: { 'application/json': { schema: { type: 'object', properties: { email: { type: 'string' }, password: { type: 'string' } }, required: ['email', 'password'] }, example: { email: 'jane@example.com', password: 'secret123' } } },
         },
-        responses: { '200': { description: 'Auth token and user' }, '400': { description: 'Invalid credentials' } },
+        responses: { '200': { description: 'JWT token and user details' }, '400': { description: 'Invalid email or password' } },
       });
     }
 
@@ -125,62 +133,98 @@ export const generateSwagger = async (): Promise<void> => {
       }
     };
 
-    [' /api/auth/refresh', '/api/auth/me', '/api/auth/assignable-users'].forEach(() => {}); // noop to keep lint quiet
-
     protectPath('/api/auth/refresh');
-    protectPath('/api/auth/me');
-    protectPath('/api/auth/assignable-users');
     protectPath('/api/leads');
     protectPath('/api/leads/export');
-    protectPath('/api/leads/bulk-delete');
     protectPath('/api/leads/{id}');
 
     // Add parameters and requestBody for leads endpoints if present
     if (doc.paths['/api/leads'] && doc.paths['/api/leads'].post) {
       addOperationMetadata(doc.paths['/api/leads'].post, {
-        summary: 'Create a new lead',
+        summary: 'Create Lead',
         tags: ['Leads'],
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: { type: 'object' },
+              schema: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  email: { type: 'string', format: 'email' },
+                  phone: { type: 'string' },
+                  company: { type: 'string' },
+                  status: { type: 'string', enum: ['new', 'contacted', 'qualified', 'lost'] },
+                  source: { type: 'string', enum: ['website', 'instagram', 'referral'] },
+                  notes: { type: 'string' },
+                  value: { type: 'number' },
+                  assignedTo: { type: 'string' },
+                },
+                required: ['name', 'email'],
+              },
               example: { name: 'Acme Lead', email: 'lead@acme.com', status: 'new', source: 'website' },
             },
           },
         },
-        responses: { '201': { description: 'Created' }, '400': { description: 'Validation error' } },
+        responses: { '201': { description: 'Lead created successfully' }, '400': { description: 'Validation error' } },
       });
     }
 
     if (doc.paths['/api/leads'] && doc.paths['/api/leads'].get) {
+      addOperationMetadata(doc.paths['/api/leads'].get, {
+        summary: 'View Leads List',
+        tags: ['Leads'],
+      });
       doc.paths['/api/leads'].get.parameters = doc.paths['/api/leads'].get.parameters || [];
       const existingParams = doc.paths['/api/leads'].get.parameters.map((p: any) => p.name);
       const paramsToAdd = [
         { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
         { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
         { name: 'search', in: 'query', schema: { type: 'string' } },
-        { name: 'status', in: 'query', schema: { type: 'string' }, description: 'Comma-separated statuses' },
-        { name: 'source', in: 'query', schema: { type: 'string' }, description: 'Comma-separated sources' },
+        { name: 'status', in: 'query', schema: { type: 'string' }, description: 'Filter by Status' },
+        { name: 'source', in: 'query', schema: { type: 'string' }, description: 'Filter by Source' },
         { name: 'sortBy', in: 'query', schema: { type: 'string' } },
         { name: 'sortOrder', in: 'query', schema: { type: 'string' } },
-        { name: 'sort', in: 'query', schema: { type: 'string', enum: ['latest', 'oldest'] } },
+        { name: 'sort', in: 'query', schema: { type: 'string', enum: ['latest', 'oldest'] }, description: 'Sort by Latest or Oldest' },
       ];
       paramsToAdd.forEach((p) => { if (!existingParams.includes(p.name)) doc.paths['/api/leads'].get.parameters.push(p); });
     }
 
-    if (doc.paths['/api/leads/bulk-delete'] && doc.paths['/api/leads/bulk-delete'].post) {
-      addOperationMetadata(doc.paths['/api/leads/bulk-delete'].post, {
-        summary: 'Bulk delete leads',
+    if (doc.paths['/api/leads/export'] && doc.paths['/api/leads/export'].get) {
+      addOperationMetadata(doc.paths['/api/leads/export'].get, {
+        summary: 'CSV Export Functionality',
         tags: ['Leads'],
-        requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } } }, required: ['ids'] }, example: { ids: ['id1','id2'] } } } },
-        responses: { '200': { description: 'Deleted' }, '400': { description: 'Invalid ids' } },
+        responses: { '200': { description: 'CSV file download' } },
       });
+    }
+
+    if (doc.paths['/api/leads/{id}']) {
+      if (doc.paths['/api/leads/{id}'].get) {
+        addOperationMetadata(doc.paths['/api/leads/{id}'].get, {
+          summary: 'View Single Lead Details',
+          tags: ['Leads'],
+          responses: { '200': { description: 'Lead details' }, '404': { description: 'Lead not found' } },
+        });
+      }
+      if (doc.paths['/api/leads/{id}'].put) {
+        addOperationMetadata(doc.paths['/api/leads/{id}'].put, {
+          summary: 'Update Lead',
+          tags: ['Leads'],
+          responses: { '200': { description: 'Lead updated successfully' }, '404': { description: 'Lead not found' } },
+        });
+      }
+      if (doc.paths['/api/leads/{id}'].delete) {
+        addOperationMetadata(doc.paths['/api/leads/{id}'].delete, {
+          summary: 'Delete Lead',
+          tags: ['Leads'],
+          responses: { '200': { description: 'Lead deleted successfully' }, '404': { description: 'Lead not found' } },
+        });
+      }
     }
 
     // ensure components.securitySchemes exists
     doc.components = doc.components || {};
-    doc.components.securitySchemes = doc.components.securitySchemes || { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } };
+    doc.components.securitySchemes = doc.components.securitySchemes || swaggerSeedDocument.components.securitySchemes;
 
     fs.writeFileSync(outputFile, JSON.stringify(doc, null, 2), 'utf8');
   }

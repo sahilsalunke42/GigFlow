@@ -8,8 +8,8 @@ export const createLeadSchema = z.object({
     email: z.string().email("Invalid email").toLowerCase(),
     phone: z.string().optional(),
     company: z.string().optional(),
-    status: z.enum(['new', 'contacted', 'qualified', 'converted', 'lost']).optional(),
-    source: z.enum(['website', 'email', 'referral', 'social', 'event', 'advertisement', 'other']).optional(),
+    status: z.enum(['new', 'contacted', 'qualified', 'lost']).optional(),
+    source: z.enum(['website', 'instagram', 'referral']).optional(),
     notes: z.string().optional(),
     value: z.number().nonnegative().optional(),
     assignedTo: z.string().optional()
@@ -20,8 +20,8 @@ export const updateLeadSchema = z.object({
     email: z.string().email("Invalid email").toLowerCase().optional(),
     phone: z.string().optional(),
     company: z.string().optional(),
-    status: z.enum(['new', 'contacted', 'qualified', 'converted', 'lost']).optional(),
-    source: z.enum(['website', 'email', 'referral', 'social', 'event', 'advertisement', 'other']).optional(),
+    status: z.enum(['new', 'contacted', 'qualified', 'lost']).optional(),
+    source: z.enum(['website', 'instagram', 'referral']).optional(),
     notes: z.string().optional(),
     value: z.number().nonnegative().optional(),
     assignedTo: z.string().optional()

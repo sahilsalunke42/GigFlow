@@ -1,5 +1,5 @@
 import { createLead, getLeads, getLeadById, updateLead, deleteLead } from "../services/leadService";
-import { exportLeads, bulkDeleteLeads } from "../services/leadService";
+import { exportLeads } from "../services/leadService";
 
 export const leadController = {
     createLead,
@@ -7,6 +7,5 @@ export const leadController = {
     getLeadById,
     updateLead,
     deleteLead,
-    exportLeads,
-    bulkDeleteLeads
+    exportLeads
 };

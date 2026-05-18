@@ -2,7 +2,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel";
-import { UserRole } from "../models/userModel";
 import { registerSchema, loginSchema } from "../validators/authValidator";
 import bcrypt from "bcryptjs";
 
@@ -85,77 +84,5 @@ export const refresh = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(401).json({ message: error instanceof Error ? error.message : "Token refresh failed" });
-    }
-};
-
-export const getCurrentUser = async (req: Request, res: Response) => {
-    try {
-        const token = req.headers.authorization?.split(" ")[1];
-        
-        if (!token) {
-            return res.status(401).json({ message: "No token provided" });
-        }
-
-        const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
-        const user = await User.findById(decoded.userId).select("_id name email role");
-
-        if (!user) {
-            return res.status(401).json({ message: "User not found" });
-        }
-
-        res.json({ 
-            user: {
-                id: user._id.toString(),
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        res.status(401).json({ message: error instanceof Error ? error.message : "Failed to get current user" });
-    }
-};
-
-export const getAssignableUsers = async (req: Request, res: Response) => {
-    try {
-        const currentUser = req.user?.user;
-
-        if (!currentUser) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        if (currentUser.role === "admin") {
-            const salesUsers = await User.find({ role: UserRole.Sales })
-                .select("_id name email role")
-                .sort({ name: 1 });
-
-            return res.json({
-                data: salesUsers.map((user) => ({
-                    id: user._id.toString(),
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                })),
-            });
-        }
-
-        const self = await User.findById(currentUser.id).select("_id name email role");
-
-        if (!self) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        return res.json({
-            data: [
-                {
-                    id: self._id.toString(),
-                    name: self.name,
-                    email: self.email,
-                    role: self.role,
-                },
-            ],
-        });
-    } catch (error) {
-        res.status(500).json({ message: error instanceof Error ? error.message : "Failed to fetch assignable users" });
     }
 };

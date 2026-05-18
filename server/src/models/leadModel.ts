@@ -4,18 +4,13 @@ export enum LeadStatus {
     New = 'new',
     Contacted = 'contacted',
     Qualified = 'qualified',
-    Converted = 'converted',
     Lost = 'lost'
 }
 
 export enum LeadSource {
     Website = 'website',
-    Email = 'email',
+    Instagram = 'instagram',
     Referral = 'referral',
-    Social = 'social',
-    Event = 'event',
-    Advertisement = 'advertisement',
-    Other = 'other'
 }
 
 export interface ILead extends Document {

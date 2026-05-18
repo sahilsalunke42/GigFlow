@@ -11,7 +11,7 @@ const leadSchema = z.object({
   email: z.string().email('Invalid email address'),
   phone: z.string().min(10, 'Invalid phone number'),
   company: z.string().min(2, 'Company must be at least 2 characters'),
-  source: z.enum(['website', 'email', 'referral', 'social', 'event', 'other']),
+  source: z.enum(['website', 'instagram', 'referral']),
   notes: z.string().optional(),
   value: z.coerce.number().min(0, 'Value must be 0 or greater').optional(),
   assignedTo: z.string().optional(),

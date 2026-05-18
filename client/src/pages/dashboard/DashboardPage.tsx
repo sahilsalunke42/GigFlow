@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, TrendingUp, Target, CheckCircle } from 'lucide-react';
+import { Users, TrendingUp, Target, BadgePercent } from 'lucide-react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Loader, EmptyState, ErrorState } from '@/components/common';
 import { useLeads } from '@/hooks';
@@ -17,10 +17,10 @@ export const DashboardPage: React.FC = () => {
     ...DEFAULT_PAGINATION,
     limit: 100,
   });
-  const { data: convertedLeadsData } = useLeads({
+  const { data: qualifiedLeadsData } = useLeads({
     ...DEFAULT_PAGINATION,
     limit: 1,
-    status: ['converted'],
+    status: ['qualified'],
   });
   const { data: newLeadsData } = useLeads({
     ...DEFAULT_PAGINATION,
@@ -62,7 +62,7 @@ export const DashboardPage: React.FC = () => {
   const leads = leadsData.data || [];
   const totalLeads = leadsData.total || 0;
   const newLeads = newLeadsData?.total || 0;
-  const convertedLeads = convertedLeadsData?.total || 0;
+  const qualifiedLeads = qualifiedLeadsData?.total || 0;
   const totalValue = leads.reduce((sum, l) => sum + (l.value || 0), 0);
 
   const stats: StatCard[] = [
@@ -79,9 +79,9 @@ export const DashboardPage: React.FC = () => {
       color: 'bg-yellow-100 text-yellow-600',
     },
     {
-      label: 'Converted',
-      value: convertedLeads,
-      icon: <CheckCircle className="w-8 h-8" />,
+      label: 'Qualified',
+      value: qualifiedLeads,
+      icon: <BadgePercent className="w-8 h-8" />,
       color: 'bg-green-100 text-green-600',
     },
     {
@@ -119,7 +119,7 @@ export const DashboardPage: React.FC = () => {
           <p className="text-gray-600">
             You have{' '}
             <span className="font-semibold text-gray-900">{totalLeads} total leads</span> with{' '}
-            <span className="font-semibold text-gray-900">{convertedLeads} conversions</span> this
+            <span className="font-semibold text-gray-900">{qualifiedLeads} qualified leads</span> this
             month.
           </p>
           <p className="text-gray-600 mt-2">

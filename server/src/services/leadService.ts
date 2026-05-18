@@ -217,23 +217,3 @@ export const exportLeads = async (req: Request, res: Response) => {
         res.status(500).json({ error: error instanceof Error ? error.message : "Failed to export leads" });
     }
 };
-
-export const bulkDeleteLeads = async (req: Request, res: Response) => {
-    try {
-        const { ids } = req.body;
-        
-        if (!Array.isArray(ids) || ids.length === 0) {
-            return res.status(400).json({ error: "Invalid ids array" });
-        }
-        
-        const objectIds = ids.map(id => new Types.ObjectId(id));
-        const result = await Lead.deleteMany({ _id: { $in: objectIds } });
-        
-        res.json({ 
-            message: "Leads deleted successfully",
-            deletedCount: result.deletedCount
-        });
-    } catch (error) {
-        res.status(500).json({ error: error instanceof Error ? error.message : "Failed to delete leads" });
-    }
-};

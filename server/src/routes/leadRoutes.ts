@@ -7,7 +7,6 @@ const router = Router();
 
 router.post("/", authMiddleware, leadController.createLead);
 router.get("/export", authMiddleware, leadController.exportLeads);
-router.post("/bulk-delete", authMiddleware, leadController.bulkDeleteLeads);
 router.get("/", authMiddleware, leadController.getLeads);
 router.get("/:id", authMiddleware, leadController.getLeadById);
 router.put("/:id", authMiddleware, leadOwnershipMiddleware, leadController.updateLead);

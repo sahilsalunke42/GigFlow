@@ -1,5 +1,5 @@
-export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
-export type LeadSource = 'website' | 'email' | 'referral' | 'social' | 'event' | 'other';
+export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'lost';
+export type LeadSource = 'website' | 'instagram' | 'referral';
 
 export interface Lead {
   id: string;
