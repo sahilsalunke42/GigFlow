@@ -3,13 +3,16 @@ import { MainLayout } from '@/layouts/MainLayout';
 import { Loader, EmptyState, ErrorState, Modal, Button } from '@/components/common';
 import { LeadsTable, LeadForm, LeadFilters } from '@/components/leads';
 import { Pagination } from '@/components/common';
-import { useLeads, useCreateLead, useUpdateLead, useDeleteLead } from '@/hooks';
-import { useLeadsStore } from '@/store';
+import { useLeads, useCreateLead, useUpdateLead, useDeleteLead, useAssignableUsers } from '@/hooks';
+import { useAuthStore, useLeadsStore } from '@/store';
 import { Lead, CreateLeadRequest, UpdateLeadRequest } from '@/types';
 import { exportLeadsToCSV } from '@/utils';
 import { Plus } from 'lucide-react';
 
 export const LeadsPage: React.FC = () => {
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === 'admin';
+
   const filters = useLeadsStore((state) => state.filters);
   const setPage = useLeadsStore((state) => state.setPage);
   const setSearch = useLeadsStore((state) => state.setSearch);
@@ -17,6 +20,7 @@ export const LeadsPage: React.FC = () => {
   const setSource = useLeadsStore((state) => state.setSource);
 
   const { data: leadsData, isLoading, error } = useLeads(filters);
+  const { data: assignableUsers = [] } = useAssignableUsers();
   const { mutate: createLead, isPending: isCreating } = useCreateLead();
   const { mutate: updateLead, isPending: isUpdating } = useUpdateLead();
   const { mutate: deleteLead, isPending: isDeleting } = useDeleteLead();
@@ -146,6 +150,8 @@ export const LeadsPage: React.FC = () => {
         <LeadForm
           onSubmit={handleCreateLead}
           isLoading={isCreating}
+          isAdmin={isAdmin}
+          assignableUsers={assignableUsers}
         />
       </Modal>
 
@@ -160,6 +166,8 @@ export const LeadsPage: React.FC = () => {
             onSubmit={handleUpdateLead}
             initialData={editingLead}
             isLoading={isUpdating}
+            isAdmin={isAdmin}
+            assignableUsers={assignableUsers}
           />
         )}
       </Modal>

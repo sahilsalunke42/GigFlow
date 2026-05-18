@@ -17,6 +17,16 @@ export const DashboardPage: React.FC = () => {
     ...DEFAULT_PAGINATION,
     limit: 100,
   });
+  const { data: convertedLeadsData } = useLeads({
+    ...DEFAULT_PAGINATION,
+    limit: 1,
+    status: ['converted'],
+  });
+  const { data: newLeadsData } = useLeads({
+    ...DEFAULT_PAGINATION,
+    limit: 1,
+    status: ['new'],
+  });
 
   if (error) {
     return (
@@ -51,8 +61,8 @@ export const DashboardPage: React.FC = () => {
 
   const leads = leadsData.data || [];
   const totalLeads = leadsData.total || 0;
-  const newLeads = leads.filter((l) => l.status === 'new').length;
-  const convertedLeads = leads.filter((l) => l.status === 'converted').length;
+  const newLeads = newLeadsData?.total || 0;
+  const convertedLeads = convertedLeadsData?.total || 0;
   const totalValue = leads.reduce((sum, l) => sum + (l.value || 0), 0);
 
   const stats: StatCard[] = [

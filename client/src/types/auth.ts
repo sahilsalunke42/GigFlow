@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'user' | 'manager';
+export type UserRole = 'admin' | 'sales';
 
 export interface User {
   id: string;
@@ -12,6 +12,17 @@ export interface User {
 export interface AuthResponse {
   token: string;
   user: User;
+}
+
+export interface AssignableUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface AssignableUsersResponse {
+  data: AssignableUser[];
 }
 
 export interface LoginRequest {

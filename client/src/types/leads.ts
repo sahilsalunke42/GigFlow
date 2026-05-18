@@ -14,6 +14,7 @@ export interface Lead {
   createdAt: string;
   updatedAt: string;
   assignedTo?: string;
+  assignedToName?: string | null;
 }
 
 export interface CreateLeadRequest {
@@ -24,6 +25,7 @@ export interface CreateLeadRequest {
   source: LeadSource;
   notes?: string;
   value?: number;
+  assignedTo?: string;
 }
 
 export interface UpdateLeadRequest extends Partial<CreateLeadRequest> {

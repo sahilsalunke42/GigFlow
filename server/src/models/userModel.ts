@@ -1,7 +1,7 @@
 import {Schema, model, Document} from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-enum UserRole {
+export enum UserRole {
     Admin = 'admin',
     Sales = 'sales'
 }

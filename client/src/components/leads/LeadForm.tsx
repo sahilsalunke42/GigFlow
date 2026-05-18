@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { CreateLeadRequest, Lead } from '@/types';
+import { AssignableUser, CreateLeadRequest, Lead } from '@/types';
 import { Button, Input, Select } from '@/components/common';
 import { LEAD_SOURCE_OPTIONS } from '@/utils/constants';
 
@@ -14,6 +14,7 @@ const leadSchema = z.object({
   source: z.enum(['website', 'email', 'referral', 'social', 'event', 'other']),
   notes: z.string().optional(),
   value: z.coerce.number().min(0, 'Value must be 0 or greater').optional(),
+  assignedTo: z.string().optional(),
 });
 
 interface LeadFormProps {
@@ -21,6 +22,8 @@ interface LeadFormProps {
   initialData?: Lead;
   isLoading?: boolean;
   error?: string | null;
+  isAdmin?: boolean;
+  assignableUsers?: AssignableUser[];
 }
 
 export const LeadForm: React.FC<LeadFormProps> = ({
@@ -28,6 +31,8 @@ export const LeadForm: React.FC<LeadFormProps> = ({
   initialData,
   isLoading = false,
   error,
+  isAdmin = false,
+  assignableUsers = [],
 }) => {
   const {
     register,
@@ -43,8 +48,17 @@ export const LeadForm: React.FC<LeadFormProps> = ({
       source: 'website',
       notes: '',
       value: 0,
+      assignedTo: '',
     },
   });
+
+  const assigneeOptions = [
+    { value: '', label: 'Unassigned' },
+    ...assignableUsers.map((user) => ({
+      value: user.id,
+      label: `${user.name} (${user.email})`,
+    })),
+  ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -101,6 +115,15 @@ export const LeadForm: React.FC<LeadFormProps> = ({
           {...register('value')}
           error={errors.value?.message}
         />
+
+        {isAdmin && (
+          <Select
+            label="Assign To"
+            options={assigneeOptions}
+            {...register('assignedTo')}
+            helperText="Assign this lead to a sales user"
+          />
+        )}
       </div>
 
       <div>

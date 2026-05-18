@@ -4,12 +4,16 @@ export enum LeadStatus {
     New = 'new',
     Contacted = 'contacted',
     Qualified = 'qualified',
+    Converted = 'converted',
     Lost = 'lost'
 }
 
 export enum LeadSource {
     Website = 'website',
+    Email = 'email',
     Referral = 'referral',
+    Social = 'social',
+    Event = 'event',
     Advertisement = 'advertisement',
     Other = 'other'
 }
@@ -17,9 +21,16 @@ export enum LeadSource {
 export interface ILead extends Document {
     name: string;
     email: string;
+    phone?: string;
+    company?: string;
     status: LeadStatus;
     source: LeadSource;
+    notes?: string;
+    value?: number;
+    assignedTo?: Schema.Types.ObjectId;
     createdBy: Schema.Types.ObjectId;
+    createdAt?: Date;
+    updatedAt?: Date;
 };
 
 const LeadSchema = new Schema<ILead>({
@@ -32,6 +43,14 @@ const LeadSchema = new Schema<ILead>({
         required: true,
         unique: true
     },
+    phone: {
+        type: String,
+        default: null
+    },
+    company: {
+        type: String,
+        default: null
+    },
     status: {
         type: String,   
         enum: Object.values(LeadStatus),
@@ -41,6 +60,19 @@ const LeadSchema = new Schema<ILead>({
         type: String,
         enum: Object.values(LeadSource),
         default: LeadSource.Website
+    },
+    notes: {
+        type: String,
+        default: null
+    },
+    value: {
+        type: Number,
+        default: 0
+    },
+    assignedTo: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
     },
     createdBy: {
         type: Schema.Types.ObjectId,

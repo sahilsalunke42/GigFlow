@@ -1,15 +1,16 @@
-import { Router } from "express";
+import { leadController } from "../controllers/leadController";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { createLead, deleteLead, getLeadById, getLeads, updateLead } from "../services/leadService";
+import { leadOwnershipMiddleware } from "../middlewares/leadOwnershipMiddleware";
+import { Router } from "express";
 
 const router = Router();
 
-router.use(authMiddleware);
-
-router.post("/", createLead);
-router.get("/", getLeads);
-router.get("/:id", getLeadById);
-router.patch("/:id", updateLead);
-router.delete("/:id", deleteLead);
+router.post("/", authMiddleware, leadController.createLead);
+router.get("/export", authMiddleware, leadController.exportLeads);
+router.post("/bulk-delete", authMiddleware, leadController.bulkDeleteLeads);
+router.get("/", authMiddleware, leadController.getLeads);
+router.get("/:id", authMiddleware, leadController.getLeadById);
+router.put("/:id", authMiddleware, leadOwnershipMiddleware, leadController.updateLead);
+router.delete("/:id", authMiddleware, leadOwnershipMiddleware, leadController.deleteLead);
 
 export default router;

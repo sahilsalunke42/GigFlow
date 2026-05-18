@@ -19,8 +19,10 @@ app.use(cors({
 //Routes
 import authRoutes from "./routes/authRoutes";
 import leadRoutes from "./routes/leadRoutes";
-app.use("/api/auth", authRoutes);
+
 app.use("/api/leads", leadRoutes);
+app.use("/api/auth", authRoutes);
+
 
 
 

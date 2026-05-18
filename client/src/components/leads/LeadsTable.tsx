@@ -44,6 +44,11 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
       label: 'Company',
     },
     {
+      key: 'assignedToName' as const,
+      label: 'Assigned To',
+      render: (assignedToName: string | null | undefined) => assignedToName || 'Unassigned',
+    },
+    {
       key: 'status' as const,
       label: 'Status',
       render: (status: string) => (

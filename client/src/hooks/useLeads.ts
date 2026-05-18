@@ -76,3 +76,11 @@ export const useExportLeads = () => {
     mutationFn: (filters: LeadFilter) => leadsApi.exportLeads(filters),
   });
 };
+
+export const useAssignableUsers = () => {
+  return useQuery({
+    queryKey: ['assignable-users'],
+    queryFn: () => leadsApi.getAssignableUsers(),
+    staleTime: 1000 * 60 * 5,
+  });
+};
