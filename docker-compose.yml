@@ -4,7 +4,7 @@ services:
   mongodb:
     image: mongo:6.0
     container_name: gigflow-mongodb
-    restart: always
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
@@ -17,13 +17,17 @@ services:
       - gigflow-network
 
   server:
-    build: ./server
+    build:
+      context: ./server
+      args:
+        NODE_ENV: ${NODE_ENV:-production}
+    image: gigflow-server:latest
     container_name: gigflow-server
-    restart: always
+    restart: unless-stopped
     ports:
       - "5000:5000"
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
+      NODE_ENV: ${NODE_ENV:-production}
       PORT: ${PORT:-5000}
       MONGO_URI: mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD:-password}@mongodb:27017/${MONGO_DB_NAME:-gigflow}?authSource=admin
       JWT_SECRET: ${JWT_SECRET:-your-secret-key}
@@ -32,25 +36,23 @@ services:
       - mongodb
     networks:
       - gigflow-network
-    volumes:
-      - ./server:/app
-      - /app/node_modules
 
   client:
-    build: ./client
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_BASE_URL:-http://localhost:5000/api}
+    image: gigflow-client:latest
     container_name: gigflow-client
-    restart: always
+    restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5173:80"
     environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:5000/api}
+      VITE_API_URL: ${VITE_API_BASE_URL:-http://localhost:5000/api}
     depends_on:
       - server
     networks:
       - gigflow-network
-    volumes:
-      - ./client:/app
-      - /app/node_modules
 
 volumes:
   mongodb_data:

@@ -1,18 +1,25 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Install all dependencies (including dev for build)
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
+# Copy source and build
+COPY . .
+RUN npm run build
+
+FROM node:18-alpine
+WORKDIR /app
+
+# Install production dependencies only
+COPY package*.json ./
 RUN npm ci --only=production
 
-# Copy source code
-COPY . .
+# Copy built artifacts
+COPY --from=builder /app/dist ./dist
 
-# Expose port
 EXPOSE 5000
 
-# Start the server
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]

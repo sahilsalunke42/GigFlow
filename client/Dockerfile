@@ -1,24 +1,16 @@
-FROM node:18-alpine
-
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package files
+# Install dependencies and build
 COPY package*.json ./
-
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
+RUN npm ci
 COPY . .
-
-# Build the app
+# Allow build-time VITE_API_URL injection
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run build
 
-# Use a lightweight server to serve the app
-RUN npm install -g serve
-
-# Expose port
-EXPOSE 5173
-
-# Serve the app
-CMD ["serve", "-s", "dist", "-l", "5173"]
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
